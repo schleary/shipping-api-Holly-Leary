@@ -17,6 +17,4 @@ RSpec.describe Location, :type => :model do
     end
   end
 
-  
-
 end
