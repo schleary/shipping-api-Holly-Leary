@@ -37,11 +37,18 @@ class ShipmentsController < ApplicationController
 
     response = {}
     ups = UPS.new(:login => ENV["UPS_LOGIN"], :password => ENV["UPS_PASSWORD"], :key => ENV["UPS_ACCESS_KEY"])
-    response << ups.find_rates(@origin, @destination, @package)
+    puts ups.find_rates(@origin, @destination, @package).inspect
+    puts"**********"
+    response[:ups] = ups.find_rates(@origin, @destination, @package)
+
     # render json: response
 
     usps = USPS.new(:login => ENV["USPS_USERNAME"])
-    response << usps.find_rates(@origin, @destination, @package)
+    puts usps.find_rates(@origin, @destination, @package).inspect
+    puts"**********"
+    response[:usps] = usps.find_rates(@origin, @destination, @package)
+
+    # puts response.inspect
     render json: response
 
     # fedex = FedEx.new(:login => ENV["FEDEX_LOGIN"], :password => ENV["FEDEX_PASSWORD"], key: ENV["FEDEX_KEY"], account: ENV["FEDEX_ACCOUNT"], :test => true)
