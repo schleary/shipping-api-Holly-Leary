@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   get '/shipments',         to:   "shipments#index"
   get '/shipments/show',    to:   "shipments#show"
 
+  # http://localhost:3000/shipments/search?country=US&city=Seattle&state=WA&zip=98119
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
