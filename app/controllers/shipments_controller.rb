@@ -4,28 +4,44 @@ class ShipmentsController < ApplicationController
   include ActiveMerchant::Shipping
 
   def search
+    puts params.inspect
     # Package up a poster and a Wii for your nephew.
 
     @package = Package.new(  100,
     [93,10],
     :cylinder => true)
 
-    @origin = Location.new(      :country => 'US',
-    :state => 'CA',
-    :city => 'Beverly Hills',
-    :zip => '90210')
+    @origin =Location.new(
 
-    @destination = Location.new( :country => 'CA',
-    :province => 'ON',
-    :city => 'Ottawa',
-    :postal_code => 'K1P 1J1')
+    # :country => params["country"],
+    #                       :state => params["state"],
+    #                       :city => params["city"],
+    #                       :zip => params["zip"])
 
-    # ups = UPS.new(:login => ENV["UPS_LOGIN"], :password => ENV["UPS_PASSWORD"], :key => ENV["UPS_ACCESS_KEY"])
-    # response = ups.find_rates(@origin, @destination, @package)
+      :country => 'US',
+      :state => 'CA',
+      :city => 'Beverly Hills',
+      :zip => '90210')
+
+    @destination = Location.new(
+        :country => params["country"],
+        :state => params["state"],
+        :city => params["city"],
+        :zip => params["zip"])
+
+      # :country => 'CA',
+      # :province => 'ON',
+      # :city => 'Ottawa',
+      # :postal_code => 'K1P 1J1'
+      # )
+
+    response = {}
+    ups = UPS.new(:login => ENV["UPS_LOGIN"], :password => ENV["UPS_PASSWORD"], :key => ENV["UPS_ACCESS_KEY"])
+    response << ups.find_rates(@origin, @destination, @package)
     # render json: response
 
     usps = USPS.new(:login => ENV["USPS_USERNAME"])
-    response = usps.find_rates(@origin, @destination, @package)
+    response << usps.find_rates(@origin, @destination, @package)
     render json: response
 
     # fedex = FedEx.new(:login => ENV["FEDEX_LOGIN"], :password => ENV["FEDEX_PASSWORD"], key: ENV["FEDEX_KEY"], account: ENV["FEDEX_ACCOUNT"], :test => true)
