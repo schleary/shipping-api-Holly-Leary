@@ -7,41 +7,12 @@ class ShipmentsController < ApplicationController
   def search
 
     if params.blank?
-      render json: {error: "Must give complete address"}, status: :bad_request
+      render json: {error: "Must give complete address fields"}, status: :bad_request
     else
-      # Package up a poster and a Wii for your nephew.
 
-      @package = Package.new(  100,
-      [93,10],
-      :cylinder => false)
-
-      @origin = Location.new(
-
-      # :country => params["country"],
-      #                       :state => params["state"],
-      #                       :city => params["city"],
-      #                       :zip => params["zip"])
-
-        :country => 'US',
-        :state => 'CA',
-        :city => 'Beverly Hills',
-        :zip => '90210'
-        # :options => {:shipping_date => DateTime.now}
-        )
-
-      @destination = Location.new(
-      #     :country => params["country"],
-      #     :state => params["state"],
-      #     :city => params["city"],
-      #     :zip => params["zip"]
-      # )
-
-        :country => params["country"],
-        :province => params["state"],
-        :city => params["city"],
-        :postal_code => params["zip"]
-        # :options => {:shipping_date => DateTime.now}
-        )
+      @package = package_params
+      @origin = origin_params
+      @destination = destination_params
 
       response = {}
       rates = {}
@@ -57,6 +28,7 @@ class ShipmentsController < ApplicationController
       render json: rates, status: 200
 
       # fedex = FedEx.new(:login => ENV["FEDEX_LOGIN"], :password => ENV["FEDEX_PASSWORD"], key: ENV["FEDEX_KEY"], account: ENV["FEDEX_ACCOUNT"], :test => true)
+
       # tracking_info = fedex.find_tracking_info('111111111111', :carrier_code => 'fedex_ground') # Ground package
       # tracking_info.shipment_events.each do |event|
       #   puts "#{event.name} at #{event.location.city}, #{event.location.state} on #{event.time}. #{event.message}"
@@ -64,6 +36,36 @@ class ShipmentsController < ApplicationController
       # render json: tracking_info
     end
   end
+
+  private
+
+  def package_params
+    Package.new(
+      100,
+      [93,10],
+      :cylinder => false)
+  end
+
+  def origin_params
+    Location.new(
+      :country => 'US',
+      :state => 'CA',
+      :city => 'Beverly Hills',
+      :zip => '90210'
+      # :options => {:shipping_date => DateTime.now}
+    )
+  end
+
+  def destination_params
+    Location.new(
+      :country => params["country"],
+      :province => params["state"],
+      :city => params["city"],
+      :postal_code => params["zip"]
+      # :options => {:shipping_date => DateTime.now}
+    )
+  end
+
 
   protected
 
